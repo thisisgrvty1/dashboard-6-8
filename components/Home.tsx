@@ -153,7 +153,7 @@ const Home: React.FC<HomeProps> = ({ setView, imageJobs, videoJobs, musicJobs, c
     ];
     return combined
       .sort((a, b) => new Date('lastUpdated' in b ? b.lastUpdated : b.timestamp).getTime() - new Date('lastUpdated' in a ? a.lastUpdated : a.timestamp).getTime())
-      .slice(0, 10);
+      .slice(0, 10); // Always limit to 10 for recent activity display
   }, [imageJobs, videoJobs, musicJobs, chatSessions, aiSearchResults]);
   
   const featuredModule = modules.find(m => m.view === 'ai_agent');

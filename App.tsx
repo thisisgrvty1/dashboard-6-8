@@ -7,6 +7,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useDatabase } from './hooks/useDatabase';
 import type { ApiKeys, Module, TopLevelView, ChatSession, GeneratedImage, GeneratedVideo, ImageJob, VideoJob, Theme, GeneratedMusic, MusicJob, AISearchResult } from './types';
 import Header from './components/Header';
 import Settings from './components/Settings';
@@ -26,16 +27,15 @@ import { GoogleGenAI } from '@google/genai';
 import { useTranslations } from './hooks/useTranslations';
 
 
-// Constants for storage limits to prevent QuotaExceededError
-const MAX_GENERATED_IMAGES_HISTORY = 5;
-const MAX_GENERATED_VIDEOS_HISTORY = 10;
-const MAX_GENERATED_MUSIC_HISTORY = 15;
+// Constants for recent activity limits (database stores full history)
+const MAX_RECENT_ACTIVITY_ITEMS = 10;
 
 const App: React.FC = () => {
   const [view, setView] = useState<TopLevelView>('home');
   const [theme, setTheme] = useLocalStorage<Theme>('theme', 'dark');
   const [showSplash, setShowSplash] = useState(sessionStorage.getItem('splashShown') !== 'true');
   const { t } = useTranslations();
+  const db = useDatabase();
   
   const [apiKeys, setApiKeys] = useLocalStorage<ApiKeys>('apiKeys', {
     make: '',
@@ -45,17 +45,42 @@ const App: React.FC = () => {
   });
 
   const [modules, setModules] = useLocalStorage<Module[]>('webhook_modules', []);
-  const [chatSessions, setChatSessions] = useLocalStorage<ChatSession[]>('ai_agent_sessions', []);
-  const [generatedImages, setGeneratedImages] = useLocalStorage<GeneratedImage[]>('generated_images', []);
-  const [generatedVideos, setGeneratedVideos] = useLocalStorage<GeneratedVideo[]>('generated_videos', []);
-  const [generatedMusic, setGeneratedMusic] = useLocalStorage<GeneratedMusic[]>('generated_music', []);
-  const [aiSearchResults, setAiSearchResults] = useLocalStorage<AISearchResult[]>('ai_search_results', []);
+  
+  // Recent activity state (limited to 10 items for performance)
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
+  const [generatedVideos, setGeneratedVideos] = useState<GeneratedVideo[]>([]);
+  const [generatedMusic, setGeneratedMusic] = useState<GeneratedMusic[]>([]);
+  const [aiSearchResults, setAiSearchResults] = useState<AISearchResult[]>([]);
   
   // Centralized job management state
   const [imageJobs, setImageJobs] = useState<ImageJob[]>([]);
   const [videoJobs, setVideoJobs] = useState<VideoJob[]>([]);
   const [musicJobs, setMusicJobs] = useState<MusicJob[]>([]);
   const pollingIntervalRef = useRef<number | null>(null);
+  
+  // Load recent activity from database when user is authenticated
+  useEffect(() => {
+    if (db.user && !db.isLoading) {
+      const loadRecentActivity = async () => {
+        const [images, videos, music, searches, chats] = await Promise.all([
+          db.loadGeneratedImages(MAX_RECENT_ACTIVITY_ITEMS),
+          db.loadGeneratedVideos(MAX_RECENT_ACTIVITY_ITEMS),
+          db.loadGeneratedMusic(MAX_RECENT_ACTIVITY_ITEMS),
+          db.loadAISearchResults(MAX_RECENT_ACTIVITY_ITEMS),
+          db.loadChatSessions(MAX_RECENT_ACTIVITY_ITEMS),
+        ]);
+        
+        setGeneratedImages(images);
+        setGeneratedVideos(videos);
+        setGeneratedMusic(music);
+        setAiSearchResults(searches);
+        setChatSessions(chats);
+      };
+      
+      loadRecentActivity();
+    }
+  }, [db.user, db.isLoading]);
   
   useEffect(() => {
     const root = window.document.documentElement;
@@ -129,7 +154,10 @@ const App: React.FC = () => {
           style: newJob.style,
           negativePrompt: newJob.negativePrompt,
         };
-        setGeneratedImages(prev => [newHistoryItem, ...prev].slice(0, MAX_GENERATED_IMAGES_HISTORY));
+        
+        // Save to database and update recent activity
+        await db.saveGeneratedImage(newHistoryItem);
+        setGeneratedImages(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
       } else {
         throw new Error('Image generation failed. No images were returned.');
       }
@@ -191,7 +219,10 @@ const App: React.FC = () => {
               model: job.model,
               inputImage: job.inputImage,
             };
-            setGeneratedVideos(prev => [newHistoryItem, ...prev].slice(0, MAX_GENERATED_VIDEOS_HISTORY));
+            
+            // Save to database and update recent activity
+            await db.saveGeneratedVideo(newHistoryItem);
+            setGeneratedVideos(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
           } else { 
             console.error(`Job ${job.id} completed but no videos found. Response:`, updatedOperation.response);
             throw new Error('Generation finished, but no video URL was found.'); 
@@ -295,15 +326,10 @@ const App: React.FC = () => {
         // Placeholder for a silent audio clip
         const audioUrl = 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAARAAADTGF2ZjU2LjQwLjEwMQAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAA';
         setMusicJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'completed', statusMessage: t('job_status_completed_single'), audioUrl } : j));
-        setGeneratedMusic(prev => [{
-            id: newJob.id,
-            prompt: newJob.prompt,
-            title: newJob.title,
-            style: newJob.style,
-            isInstrumental: newJob.isInstrumental,
-            audioUrl: audioUrl,
-            timestamp: newJob.timestamp
-        }, ...prev].slice(0, MAX_GENERATED_MUSIC_HISTORY));
+        
+        // Save to database and update recent activity
+        await db.saveGeneratedMusic(newHistoryItem);
+        setGeneratedMusic(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
     }, 25000);
   };
 
