@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Dashboard 6.8 - outlook test",
+  "description": "An application to create and chat with Make.com webhooks, with settings for various API keys like Make.com, OpenAI, and Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
