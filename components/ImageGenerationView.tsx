@@ -179,7 +179,7 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({
       <div className="grid lg:grid-cols-12 gap-8 h-full image-generation-workspace">
         <div className="lg:col-span-4 xl:col-span-3 bg-white dark:bg-[#101010] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 flex flex-col h-fit generation-settings-sidebar">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl font-bold text-purple-600 dark:text-purple-400">Image Settings</h2>
+            <h2 className="font-display text-2xl font-bold text-purple-600 dark:text-purple-400">{t('image_generation_settings_title')}</h2>
             {history.length > 0 && (
                 <button onClick={() => setSubView('history')} className="text-xs text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 p-2 rounded-lg transition-colors flex items-center space-x-1">
                     <History size={14} />
@@ -189,59 +189,59 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({
           </div>
           <form onSubmit={handleGenerate} className="space-y-5">
             <div>
-              <label htmlFor="prompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Prompt</label>
+              <label htmlFor="prompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('image_generation_prompt_label')}</label>
               <textarea
                 id="prompt"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handlePromptKeyDown}
                 className="w-full px-4 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition min-h-[100px]"
-                placeholder="A majestic lion wearing a crown..."
+                placeholder={t('image_generation_prompt_placeholder')}
               />
             </div>
              <div>
-              <label htmlFor="negativePrompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Negative Prompt (Optional)</label>
+              <label htmlFor="negativePrompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('image_generation_negative_prompt_label')}</label>
               <textarea
                 id="negativePrompt"
                 value={negativePrompt}
                 onChange={(e) => setNegativePrompt(e.target.value)}
                 className="w-full px-4 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition min-h-[60px]"
-                placeholder="e.g., blurry, cartoon, text"
+                placeholder={t('image_generation_negative_prompt_placeholder')}
               />
             </div>
             <div>
-              <label htmlFor="style" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Style (Optional)</label>
+              <label htmlFor="style" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('image_generation_style_label')}</label>
               <select id="style" value={style} onChange={e => setStyle(e.target.value)} className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none">
-                  {styles.map(s => <option key={s} value={s}>{s || 'Default'}</option>)}
+                  {styles.map(s => <option key={s} value={s}>{s || t('image_generation_style_default')}</option>)}
               </select>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label htmlFor="aspectRatio" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Aspect Ratio</label>
+                    <label htmlFor="aspectRatio" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('image_generation_aspect_ratio_label')}</label>
                     <select id="aspectRatio" value={aspectRatio} onChange={e => setAspectRatio(e.target.value)} className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none">
                         {aspectRatios.map(ar => <option key={ar} value={ar}>{ar}</option>)}
                     </select>
                 </div>
                  <div>
-                    <label htmlFor="numberOfImages" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Number</label>
+                    <label htmlFor="numberOfImages" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('image_generation_number_label')}</label>
                     <input type="number" id="numberOfImages" value={numberOfImages} onChange={e => setNumberOfImages(parseInt(e.target.value))} min="1" max="4" className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none"/>
                 </div>
             </div>
             <div>
               <label htmlFor="seed" className="flex items-center space-x-2 text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">
-                <span>Seed (Optional)</span>
+                <span>{t('image_generation_seed_label')}</span>
                 <span className="group relative"><HelpCircle size={14} className="cursor-help"/>
-                  <span className="absolute bottom-full z-10 mb-2 w-64 p-2 bg-black/80 text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Using the same seed and prompt will generate similar images. Leave blank for a random seed.</span>
+                  <span className="absolute bottom-full z-10 mb-2 w-64 p-2 bg-black/80 text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">{t('image_generation_seed_tooltip')}</span>
                 </span>
               </label>
-              <input type="number" id="seed" value={seed} onChange={e => setSeed(e.target.value)} min="0" placeholder="e.g., 42" className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none"/>
+              <input type="number" id="seed" value={seed} onChange={e => setSeed(e.target.value)} min="0" placeholder={t('image_generation_seed_placeholder')} className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none"/>
             </div>
             <button
               type="submit"
               disabled={jobs.some(j => j.status === 'generating') || !geminiApiKey}
               className="w-full px-5 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transform hover:-translate-y-px flex items-center justify-center space-x-2 disabled:bg-slate-300 dark:disabled:bg-gray-700 disabled:shadow-none disabled:transform-none disabled:cursor-not-allowed"
             >
-              <Sparkles size={18} /> <span>Generate</span>
+              <Sparkles size={18} /> <span>{t('image_generation_generate_button')}</span>
             </button>
              {error && (<p className="text-xs text-red-500 mt-2 text-center">{error}</p>)}
           </form>
@@ -249,13 +249,13 @@ const ImageGenerationView: React.FC<ImageGenerationViewProps> = ({
         
         <div className="lg:col-span-8 xl:col-span-9 generation-queue-area">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">Generation Queue</h2>
+                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">{t('image_generation_queue_title')}</h2>
                 <button
                   onClick={onClearCompleted}
                   className="text-sm text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-2"
                 >
                   <XCircle size={16}/>
-                  <span>Clear Completed</span>
+                  <span>{t('image_generation_clear_completed')}</span>
                 </button>
             </div>
             {jobs.length === 0 ? (

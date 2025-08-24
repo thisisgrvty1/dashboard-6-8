@@ -211,7 +211,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
     <div className="grid lg:grid-cols-12 gap-8 h-full video-generation-workspace">
       <div className="lg:col-span-4 xl:col-span-3 bg-white dark:bg-[#101010] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 flex flex-col h-fit generation-settings-sidebar">
          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl font-bold text-green-600 dark:text-green-400">Video Settings</h2>
+            <h2 className="font-display text-2xl font-bold text-green-600 dark:text-green-400">{t('video_generation_settings_title')}</h2>
             {history.length > 0 && (
                 <button onClick={() => setSubView('history')} className="text-xs text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 p-2 rounded-lg transition-colors flex items-center space-x-1">
                     <History size={14} />
@@ -221,18 +221,18 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
           </div>
           <form onSubmit={handleGenerate} className="space-y-5">
             <div>
-              <label htmlFor="prompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Prompt</label>
+              <label htmlFor="prompt" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('video_generation_prompt_label')}</label>
               <textarea
                 id="prompt"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handlePromptKeyDown}
                 className="w-full px-4 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition min-h-[100px]"
-                placeholder="A neon hologram of a cat driving a sports car..."
+                placeholder={t('video_generation_prompt_placeholder')}
               />
             </div>
              <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Input Image (Optional)</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('video_generation_input_image_label')}</label>
               {inputImage ? (
                 <div className="relative group">
                   <img src={inputImage.url} alt="Input preview" className="w-full h-auto rounded-lg border border-slate-300 dark:border-white/10" />
@@ -244,7 +244,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
                 <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-slate-100 dark:bg-black/40 border-2 border-slate-300 dark:border-white/20 border-dashed rounded-lg cursor-pointer hover:bg-slate-200 dark:hover:bg-black/60">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 text-slate-500 dark:text-gray-400">
                         <UploadCloud size={32} />
-                        <p className="mb-2 text-sm">Click to upload an image</p>
+                        <p className="mb-2 text-sm">{t('video_generation_upload_cta')}</p>
                     </div>
                     <input id="image-upload" type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleFileChange} />
                 </label>
@@ -252,7 +252,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
             </div>
 
             <div>
-              <label htmlFor="model" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Model</label>
+              <label htmlFor="model" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('video_generation_model_label')}</label>
               <select id="model" value={model} onChange={e => setModel(e.target.value)} className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none">
                   <option value="veo-2.0-generate-001">VEO 2.0</option>
                   <option value="veo-3.0-generate-001" disabled>VEO 3.0 (Future)</option>
@@ -261,17 +261,17 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                  <label htmlFor="numberOfVideos" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">Number</label>
+                  <label htmlFor="numberOfVideos" className="block text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">{t('video_generation_number_label')}</label>
                   <input type="number" id="numberOfVideos" value={numberOfVideos} onChange={e => setNumberOfVideos(parseInt(e.target.value))} min="1" max="4" className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"/>
               </div>
                <div>
                 <label htmlFor="seed" className="flex items-center space-x-2 text-sm font-medium text-slate-600 dark:text-gray-400 mb-2">
-                  <span>Seed (Optional)</span>
+                  <span>{t('video_generation_seed_label')}</span>
                   <span className="group relative"><HelpCircle size={14} className="cursor-help"/>
-                    <span className="absolute bottom-full z-10 mb-2 w-64 p-2 bg-black/80 text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Using the same seed and prompt will generate similar videos.</span>
+                    <span className="absolute bottom-full z-10 mb-2 w-64 p-2 bg-black/80 text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">{t('video_generation_seed_tooltip')}</span>
                   </span>
                 </label>
-                <input type="number" id="seed" value={seed} onChange={e => setSeed(e.target.value)} min="0" placeholder="e.g., 12345" className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"/>
+                <input type="number" id="seed" value={seed} onChange={e => setSeed(e.target.value)} min="0" placeholder={t('video_generation_seed_placeholder')} className="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"/>
               </div>
             </div>
             <button
@@ -279,7 +279,7 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
               disabled={!geminiApiKey}
               className="w-full px-5 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-500 transition-all duration-300 shadow-[0_0_20px_rgba(22,163,74,0.5)] hover:shadow-[0_0_30px_rgba(22,163,74,0.6)] transform hover:-translate-y-px flex items-center justify-center space-x-2 disabled:bg-slate-300 dark:disabled:bg-gray-700 disabled:shadow-none disabled:transform-none disabled:cursor-not-allowed"
             >
-              <Sparkles size={18} /><span>Generate</span>
+              <Sparkles size={18} /><span>{t('video_generation_generate_button')}</span>
             </button>
              {error && (<p className="text-xs text-red-500 mt-2 text-center">{error}</p>)}
           </form>
@@ -287,13 +287,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
 
       <div className="lg:col-span-8 xl:col-span-9 generation-queue-area">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">Generation Queue</h2>
+                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">{t('video_generation_queue_title')}</h2>
                 <button
                   onClick={onClearCompleted}
                   className="text-sm text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-2"
                 >
                   <XCircle size={16}/>
-                  <span>Clear Completed</span>
+                  <span>{t('video_generation_clear_completed')}</span>
                 </button>
             </div>
             {jobs.length === 0 ? (
