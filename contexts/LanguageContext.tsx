@@ -15,6 +15,8 @@ interface LanguageProviderProps {
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useLocalStorage<Language>('language', 'en');
+  
+  console.log('Current language in context:', language);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

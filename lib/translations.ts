@@ -511,3 +511,11 @@ export const translations: Record<Language, any> = {
     privacy_title: 'Datenschutzerklärung'
   }
 };
+
+// Debug: Log available translations
+console.log('Available translations:', Object.keys(translations));
+console.log('German translations sample:', {
+  image_title: translations.de.image_title,
+  video_title: translations.de.video_title,
+  settings_title: translations.de.settings_title
+});

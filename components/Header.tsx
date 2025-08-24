@@ -95,6 +95,7 @@ const Header: React.FC<HeaderProps> = ({ setView, isHome, theme, setTheme, image
                                         onClick={() => {
                                             setLanguage(lang.code);
                                             setIsLangOpen(false);
+                                            console.log('Language changed to:', lang.code);
                                         }}
                                         className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/10 flex items-center justify-between"
                                     >
