@@ -364,7 +364,7 @@ const App: React.FC = () => {
       setMusicJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, statusMessage: t('music_job_status_adding_instruments') } : j));
     }, 10000);
 
-    setTimeout(() => {
+    setTimeout(async () => {
         // Simulate a successful generation
         // Placeholder for a silent audio clip
         const audioUrl = 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAARAAADTGF2ZjU2LjQwLjEwMQAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAA';
