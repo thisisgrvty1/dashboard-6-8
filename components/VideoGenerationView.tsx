@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { VideoIcon, Sparkles, ArrowLeft, History, Trash2, HelpCircle, XCircle, UploadCloud, X } from 'lucide-react';
 import type { GeneratedVideo, VideoJob } from '../types';
+import { useTranslations } from '../hooks/useTranslations';
 import VideoPlayer from './VideoPlayer';
 import MediaViewerModal, { MediaItem } from './MediaViewerModal';
 import VideoGenerationBackground from './backgrounds/VideoGenerationBackground';
@@ -40,6 +41,8 @@ const pageContainerVariants: Variants = {
 const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({ 
   geminiApiKey, history, setHistory, jobs, onGenerate, onClearCompleted, onDeleteJob
 }) => {
+  const { t } = useTranslations();
+  
   const [prompt, setPrompt] = useState('');
   const [numberOfVideos, setNumberOfVideos] = useState(1);
   const [seed, setSeed] = useState('');
