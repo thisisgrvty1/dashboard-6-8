@@ -16,10 +16,17 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useLocalStorage<Language>('language', 'en');
   
-  console.log('Current language in context:', language);
+  console.log('LanguageProvider - Current language:', language);
+  console.log('LanguageProvider - setLanguage function:', typeof setLanguage);
+  
+  const handleSetLanguage = (newLanguage: Language) => {
+    console.log('LanguageProvider - Setting language to:', newLanguage);
+    setLanguage(newLanguage);
+    console.log('LanguageProvider - Language set, should trigger re-render');
+  };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

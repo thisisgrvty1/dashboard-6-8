@@ -5,6 +5,7 @@ export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dis
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
+      console.log(`useLocalStorage - Reading ${key} from localStorage:`, item);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       console.error(error);
@@ -18,6 +19,7 @@ export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dis
         typeof storedValue === 'function'
           ? storedValue(storedValue)
           : storedValue;
+      console.log(`useLocalStorage - Writing ${key} to localStorage:`, valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       console.error(error);
