@@ -27,7 +27,7 @@ import { useTranslations } from './hooks/useTranslations';
 
 
 // Constants for storage limits to prevent QuotaExceededError
-const MAX_GENERATED_IMAGES_HISTORY = 20;
+const MAX_GENERATED_IMAGES_HISTORY = 5;
 const MAX_GENERATED_VIDEOS_HISTORY = 10;
 const MAX_GENERATED_MUSIC_HISTORY = 15;
 
