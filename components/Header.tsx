@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ setView, isHome, theme, setTheme, image
              <div className="w-8 h-8 rounded-lg bg-mesh-gradient bg-[200%_auto] animate-gradient-pan flex items-center justify-center">
                 <BotMessageSquare size={20} className="text-white" />
             </div>
-            <h1 className="font-display text-2xl font-bold text-transparent bg-clip-text bg-mesh-gradient bg-[200%_auto] animate-gradient-pan tracking-wide">
+            <h1 className="hidden sm:block font-display text-2xl font-bold text-transparent bg-clip-text bg-mesh-gradient bg-[200%_auto] animate-gradient-pan tracking-wide">
                 AI Dashboard
             </h1>
           </div>
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({ setView, isHome, theme, setTheme, image
               className="px-3 py-1.5 rounded-lg text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 transition-colors duration-200 flex items-center space-x-2"
             >
               <Sparkles size={16} />
-              <span>{t('header_tech_preview')}</span>
+              <span className="hidden sm:inline">{t('header_tech_preview')}</span>
             </button>
             <JobStatusIndicator imageJobs={imageJobs} videoJobs={videoJobs} musicJobs={musicJobs} setView={setView} />
              <div className="relative" ref={langRef}>
