@@ -26,6 +26,11 @@ import { GoogleGenAI } from '@google/genai';
 import { useTranslations } from './hooks/useTranslations';
 
 
+// Constants for storage limits to prevent QuotaExceededError
+const MAX_GENERATED_IMAGES_HISTORY = 20;
+const MAX_GENERATED_VIDEOS_HISTORY = 10;
+const MAX_GENERATED_MUSIC_HISTORY = 15;
+
 const App: React.FC = () => {
   const [view, setView] = useState<TopLevelView>('home');
   const [theme, setTheme] = useLocalStorage<Theme>('theme', 'dark');
@@ -124,7 +129,7 @@ const App: React.FC = () => {
           style: newJob.style,
           negativePrompt: newJob.negativePrompt,
         };
-        setGeneratedImages(prev => [newHistoryItem, ...prev]);
+        setGeneratedImages(prev => [newHistoryItem, ...prev].slice(0, MAX_GENERATED_IMAGES_HISTORY));
       } else {
         throw new Error('Image generation failed. No images were returned.');
       }
@@ -186,7 +191,7 @@ const App: React.FC = () => {
               model: job.model,
               inputImage: job.inputImage,
             };
-            setGeneratedVideos(prev => [newHistoryItem, ...prev]);
+            setGeneratedVideos(prev => [newHistoryItem, ...prev].slice(0, MAX_GENERATED_VIDEOS_HISTORY));
           } else { 
             console.error(`Job ${job.id} completed but no videos found. Response:`, updatedOperation.response);
             throw new Error('Generation finished, but no video URL was found.'); 
@@ -298,7 +303,7 @@ const App: React.FC = () => {
             isInstrumental: newJob.isInstrumental,
             audioUrl: audioUrl,
             timestamp: newJob.timestamp
-        }, ...prev]);
+        }, ...prev].slice(0, MAX_GENERATED_MUSIC_HISTORY));
     }, 25000);
   };
 
