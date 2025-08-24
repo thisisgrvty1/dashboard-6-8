@@ -77,6 +77,9 @@ export const translations: Record<Language, any> = {
     settings_openai_label: 'OpenAI API Key',
     settings_openai_placeholder: 'Not used in this version',
     settings_openai_desc: 'Included for future enhancements.',
+    settings_debug_title: 'Developer Settings',
+    settings_debug_enable: 'Enable Debug Mode',
+    settings_debug_desc: 'Shows debug panel with detailed logging for troubleshooting. Logs are stored locally and can be exported.',
     // --- WEBHOOK VIEW ---
     webhook_title: 'Webhook Chats',
     webhook_search_placeholder: 'Search modules...',
@@ -296,6 +299,9 @@ export const translations: Record<Language, any> = {
     settings_openai_label: 'OpenAI API-Schlüssel',
     settings_openai_placeholder: 'In dieser Version nicht verwendet',
     settings_openai_desc: 'Für zukünftige Erweiterungen enthalten.',
+    settings_debug_title: 'Entwicklereinstellungen',
+    settings_debug_enable: 'Debug-Modus aktivieren',
+    settings_debug_desc: 'Zeigt Debug-Panel mit detaillierter Protokollierung zur Fehlerbehebung. Protokolle werden lokal gespeichert und können exportiert werden.',
     // --- WEBHOOK VIEW ---
     webhook_title: 'Webhook-Chats',
     webhook_search_placeholder: 'Module suchen...',

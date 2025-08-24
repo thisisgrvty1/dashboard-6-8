@@ -3,6 +3,7 @@ import { motion, Variants, AnimatePresence } from 'framer-motion';
 import type { ApiKeys } from '../types';
 import { CheckCircle, Save } from 'lucide-react';
 import { useTranslations } from '../hooks/useTranslations';
+import { useDebug } from '../hooks/useDebug';
 
 interface SettingsProps {
   apiKeys: ApiKeys;
@@ -37,6 +38,7 @@ const itemVariants: Variants = {
 
 const Settings: React.FC<SettingsProps> = ({ apiKeys, setApiKeys }) => {
   const { t } = useTranslations();
+  const { isDebugEnabled, setIsDebugEnabled } = useDebug();
   const [localKeys, setLocalKeys] = useState<ApiKeys>(apiKeys);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [enabledApis, setEnabledApis] = useState({
@@ -146,6 +148,26 @@ const Settings: React.FC<SettingsProps> = ({ apiKeys, setApiKeys }) => {
               </AnimatePresence>
             </div>
           ))}
+          
+          {/* Debug Settings Section */}
+          <div className="border-t border-slate-200 dark:border-gray-700 pt-6">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Developer Settings</h3>
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id="enable-debug"
+                checked={isDebugEnabled}
+                onChange={(e) => setIsDebugEnabled(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 bg-slate-100 dark:bg-black/40"
+              />
+              <label htmlFor="enable-debug" className="font-medium text-slate-700 dark:text-gray-300 select-none">
+                Enable Debug Mode
+              </label>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-gray-500 mt-2 ml-7">
+              Shows debug panel with detailed logging for troubleshooting. Logs are stored locally and can be exported.
+            </p>
+          </div>
         </div>
         <div className="mt-8 flex items-center justify-end space-x-4">
           {renderSaveMessage()}

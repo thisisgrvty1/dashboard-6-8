@@ -14,6 +14,7 @@ interface AISearchViewProps {
     geminiApiKey: string;
     history: AISearchResult[];
     setHistory: React.Dispatch<React.SetStateAction<AISearchResult[]>>;
+    onSaveResult?: (result: AISearchResult) => Promise<void>;
 }
 
 const pageContainerVariants: Variants = {
@@ -36,7 +37,7 @@ const pageContainerVariants: Variants = {
   },
 };
 
-const AISearchView: React.FC<AISearchViewProps> = ({ geminiApiKey, history, setHistory }) => {
+const AISearchView: React.FC<AISearchViewProps> = ({ geminiApiKey, history, setHistory, onSaveResult }) => {
     const { t } = useTranslations();
     const [searchInput, setSearchInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -73,13 +74,23 @@ const AISearchView: React.FC<AISearchViewProps> = ({ geminiApiKey, history, setH
             const groundingChunks = (response.candidates?.[0]?.groundingMetadata?.groundingChunks || []) as GroundingChunk[];
             
             setCurrentResult({ prompt: searchPrompt, result: resultText, sources: groundingChunks });
-            setHistory(prev => [{
+            
+            const newResult = {
                 id: `search-${Date.now()}`,
                 prompt: searchPrompt,
                 result: resultText,
                 sources: groundingChunks,
                 timestamp: new Date().toISOString(),
-            }, ...prev]);
+            };
+            
+            setHistory(prev => [newResult, ...prev]);
+            
+            // Save to database if available
+            if (onSaveResult) {
+                onSaveResult(newResult).catch(error => {
+                    console.error('Failed to save search result to database:', error);
+                });
+            }
 
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';

@@ -25,6 +25,10 @@ import PrivacyPolicyView from './components/PrivacyPolicyView';
 import GeminiLiveView from './components/GeminiLiveView';
 import { GoogleGenAI } from '@google/genai';
 import { useTranslations } from './hooks/useTranslations';
+import { useDatabase } from './hooks/useDatabase';
+import { useDebug } from './hooks/useDebug';
+import ErrorBoundary from './components/ErrorBoundary';
+import DebugPanel from './components/DebugPanel';
 
 
 // Constants for recent activity limits (database stores full history)
@@ -36,6 +40,7 @@ const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(sessionStorage.getItem('splashShown') !== 'true');
   const { t } = useTranslations();
   const db = useDatabase();
+  const { isDebugEnabled, debugLog, debugError, debugWarn } = useDebug();
   
   const [apiKeys, setApiKeys] = useLocalStorage<ApiKeys>('apiKeys', {
     make: '',
@@ -62,25 +67,46 @@ const App: React.FC = () => {
   // Load recent activity from database when user is authenticated
   useEffect(() => {
     if (db.user && !db.isLoading) {
+      debugLog('Loading recent activity from database for user:', db.user.id);
       const loadRecentActivity = async () => {
-        const [images, videos, music, searches, chats] = await Promise.all([
-          db.loadGeneratedImages(MAX_RECENT_ACTIVITY_ITEMS),
-          db.loadGeneratedVideos(MAX_RECENT_ACTIVITY_ITEMS),
-          db.loadGeneratedMusic(MAX_RECENT_ACTIVITY_ITEMS),
-          db.loadAISearchResults(MAX_RECENT_ACTIVITY_ITEMS),
-          db.loadChatSessions(MAX_RECENT_ACTIVITY_ITEMS),
-        ]);
-        
-        setGeneratedImages(images);
-        setGeneratedVideos(videos);
-        setGeneratedMusic(music);
-        setAiSearchResults(searches);
-        setChatSessions(chats);
+        try {
+          const [images, videos, music, searches, chats] = await Promise.all([
+            db.loadGeneratedImages(MAX_RECENT_ACTIVITY_ITEMS),
+            db.loadGeneratedVideos(MAX_RECENT_ACTIVITY_ITEMS),
+            db.loadGeneratedMusic(MAX_RECENT_ACTIVITY_ITEMS),
+            db.loadAISearchResults(MAX_RECENT_ACTIVITY_ITEMS),
+            db.loadChatSessions(MAX_RECENT_ACTIVITY_ITEMS),
+          ]);
+          
+          setGeneratedImages(images);
+          setGeneratedVideos(videos);
+          setGeneratedMusic(music);
+          setAiSearchResults(searches);
+          setChatSessions(chats);
+          
+          debugLog('Recent activity loaded successfully', {
+            images: images.length,
+            videos: videos.length,
+            music: music.length,
+            searches: searches.length,
+            chats: chats.length
+          });
+        } catch (error) {
+          debugError('Failed to load recent activity:', error);
+        }
       };
       
       loadRecentActivity();
+    } else if (!db.user && !db.isLoading) {
+      debugLog('User not authenticated, clearing recent activity');
+      // Clear recent activity when user is not authenticated
+      setGeneratedImages([]);
+      setGeneratedVideos([]);
+      setGeneratedMusic([]);
+      setAiSearchResults([]);
+      setChatSessions([]);
     }
-  }, [db.user, db.isLoading]);
+  }, [db.user, db.isLoading, debugLog, debugError]);
   
   useEffect(() => {
     const root = window.document.documentElement;
@@ -118,6 +144,8 @@ const App: React.FC = () => {
       status: 'generating',
       timestamp: new Date().toISOString(),
     };
+    
+    debugLog('Starting image generation job:', newJob.id, settings);
     setImageJobs(prev => [newJob, ...prev]);
 
     try {
@@ -156,13 +184,20 @@ const App: React.FC = () => {
         };
         
         // Save to database and update recent activity
-        await db.saveGeneratedImage(newHistoryItem);
+        try {
+          await db.saveGeneratedImage(newHistoryItem);
+          debugLog('Image saved to database:', newHistoryItem.id);
+        } catch (dbError) {
+          debugError('Failed to save image to database:', dbError);
+        }
         setGeneratedImages(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
+        debugLog('Image generation completed:', newJob.id);
       } else {
         throw new Error('Image generation failed. No images were returned.');
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+      debugError('Image generation failed:', errorMessage, newJob.id);
       setImageJobs(prev => prev.map(job => job.id === newJob.id ? { ...job, status: 'failed', error: errorMessage } : job));
     }
   };
@@ -184,22 +219,23 @@ const App: React.FC = () => {
       return;
     }
 
+    debugLog('Polling video jobs:', activeJobs.length);
     const ai = new GoogleGenAI({ apiKey: apiKeys.gemini });
 
     for (const job of activeJobs) {
       try {
-        console.log(`Polling job ${job.id}, operation:`, job.operation);
+        debugLog(`Polling job ${job.id}, operation:`, job.operation);
         const updatedOperation = await ai.operations.getVideosOperation({ operation: job.operation });
-        console.log(`Job ${job.id} operation status:`, updatedOperation);
+        debugLog(`Job ${job.id} operation status:`, updatedOperation);
         
         if (updatedOperation.done) {
           const generatedVideos = updatedOperation.response?.generatedVideos;
-          console.log(`Job ${job.id} generated videos:`, generatedVideos);
+          debugLog(`Job ${job.id} generated videos:`, generatedVideos);
           if (generatedVideos && generatedVideos.length > 0) {
             const authenticatedUrls = generatedVideos.map(v => {
               const uri = v.video?.uri;
               if (!uri) {
-                console.error(`No URI found for video in job ${job.id}:`, v);
+                debugError(`No URI found for video in job ${job.id}:`, v);
                 return null;
               }
               // Check if the URI already has query parameters
@@ -207,7 +243,7 @@ const App: React.FC = () => {
               return `${uri}${separator}key=${apiKeys.gemini}`;
             }).filter(Boolean);
             
-            console.log(`Job ${job.id} authenticated URLs:`, authenticatedUrls);
+            debugLog(`Job ${job.id} authenticated URLs:`, authenticatedUrls);
             const usedSeed = job.seed;
             setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: 'completed', videoUrls: authenticatedUrls, seed: usedSeed, statusMessage: t('job_status_completed_single') } : j));
             const newHistoryItem: GeneratedVideo = { 
@@ -221,24 +257,29 @@ const App: React.FC = () => {
             };
             
             // Save to database and update recent activity
-            await db.saveGeneratedVideo(newHistoryItem);
+            try {
+              await db.saveGeneratedVideo(newHistoryItem);
+              debugLog('Video saved to database:', newHistoryItem.id);
+            } catch (dbError) {
+              debugError('Failed to save video to database:', dbError);
+            }
             setGeneratedVideos(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
           } else { 
-            console.error(`Job ${job.id} completed but no videos found. Response:`, updatedOperation.response);
+            debugError(`Job ${job.id} completed but no videos found. Response:`, updatedOperation.response);
             throw new Error('Generation finished, but no video URL was found.'); 
           }
         } else {
           const state = (updatedOperation.metadata as any)?.state ?? 'IN_PROGRESS';
-          console.log(`Job ${job.id} still processing, state: ${state}`);
+          debugLog(`Job ${job.id} still processing, state: ${state}`);
           setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, operation: updatedOperation, statusMessage: t('video_job_status_message_processing', { state: String((updatedOperation.metadata as any)?.state ?? 'IN_PROGRESS') }) } : j));
         }
       } catch (pollError) {
-        console.error(`Polling error for job ${job.id}:`, pollError);
+        debugError(`Polling error for job ${job.id}:`, pollError);
         const errorMessage = pollError instanceof Error ? pollError.message : 'Unknown polling error.';
         setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: 'failed', error: errorMessage, statusMessage: t('job_status_failed_single') } : j));
       }
     }
-  }, [apiKeys.gemini, setGeneratedVideos, t]);
+  }, [apiKeys.gemini, setGeneratedVideos, t, debugLog, debugError]);
 
   useEffect(() => {
     const isPollingNeeded = videoJobs.some(j => j.status === 'polling');
@@ -264,6 +305,7 @@ const App: React.FC = () => {
         statusMessage: 'Initializing...',
         timestamp: new Date().toISOString(),
     };
+    debugLog('Starting video generation job:', newJob.id, settings);
     setVideoJobs(prev => [newJob, ...prev]);
 
     try {
@@ -282,12 +324,12 @@ const App: React.FC = () => {
         };
       }
 
-      console.log('Starting video generation with payload:', generationPayload);
+      debugLog('Starting video generation with payload:', generationPayload);
       const operation = await ai.models.generateVideos(generationPayload);
-      console.log('Video generation operation started:', operation);
+      debugLog('Video generation operation started:', operation);
       setVideoJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'polling', operation, statusMessage: t('job_status_polling') } : j));
     } catch (e) {
-      console.error('Video generation failed:', e);
+      debugError('Video generation failed:', e);
       const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
       setVideoJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'failed', error: errorMessage, statusMessage: t('job_status_failed_single') } : j));
     }
@@ -310,6 +352,7 @@ const App: React.FC = () => {
       statusMessage: 'Initializing...',
       timestamp: new Date().toISOString(),
     };
+    debugLog('Starting music generation job:', newJob.id, settings);
     setMusicJobs(prev => [newJob, ...prev]);
 
     // Simulate API call and polling
@@ -327,8 +370,23 @@ const App: React.FC = () => {
         const audioUrl = 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAARAAADTGF2ZjU2LjQwLjEwMQAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAA';
         setMusicJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'completed', statusMessage: t('job_status_completed_single'), audioUrl } : j));
         
+        const newHistoryItem: GeneratedMusic = {
+          id: newJob.id,
+          prompt: newJob.prompt,
+          title: newJob.title,
+          style: newJob.style,
+          isInstrumental: newJob.isInstrumental,
+          audioUrl,
+          timestamp: newJob.timestamp,
+        };
+        
         // Save to database and update recent activity
-        await db.saveGeneratedMusic(newHistoryItem);
+        try {
+          await db.saveGeneratedMusic(newHistoryItem);
+          debugLog('Music saved to database:', newHistoryItem.id);
+        } catch (dbError) {
+          debugError('Failed to save music to database:', dbError);
+        }
         setGeneratedMusic(prev => [newHistoryItem, ...prev].slice(0, MAX_RECENT_ACTIVITY_ITEMS));
     }, 25000);
   };
@@ -355,7 +413,7 @@ const App: React.FC = () => {
           />
         );
       case 'ai_agent':
-        return <AIAgentView geminiApiKey={apiKeys.gemini} sessions={chatSessions} setSessions={setChatSessions} />;
+        return <AIAgentView geminiApiKey={apiKeys.gemini} sessions={chatSessions} setSessions={setChatSessions} onSaveSession={db.saveChatSession} />;
       case 'video_generation':
         return <VideoGenerationView 
                   geminiApiKey={apiKeys.gemini} 
@@ -387,7 +445,7 @@ const App: React.FC = () => {
                   onDeleteJob={handleDeleteMusicJob}
                 />;
       case 'ai_search':
-        return <AISearchView geminiApiKey={apiKeys.gemini} history={aiSearchResults} setHistory={setAiSearchResults} />;
+        return <AISearchView geminiApiKey={apiKeys.gemini} history={aiSearchResults} setHistory={setAiSearchResults} onSaveResult={db.saveAISearchResult} />;
       case 'imprint':
         return <ImprintView setView={setView} />;
       case 'privacy_policy':
@@ -408,7 +466,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans flex flex-col app-container">
+    <ErrorBoundary>
+      <div className="min-h-screen font-sans flex flex-col app-container">
+        {isDebugEnabled && <DebugPanel />}
       <AnimatePresence>
         {showSplash && (
           <motion.div
@@ -438,7 +498,8 @@ const App: React.FC = () => {
           <Footer setView={setView} />
         </motion.div>
       )}
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 };
 

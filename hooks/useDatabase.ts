@@ -89,21 +89,26 @@ export const useDatabase = () => {
   const saveGeneratedImage = async (image: GeneratedImage) => {
     if (!user) return;
     
-    const { error } = await supabase
-      .from('generated_images')
-      .insert({
-        id: image.id,
-        user_id: user.id,
-        prompt: image.prompt,
-        image_urls: image.imageUrls,
-        aspect_ratio: image.aspectRatio,
-        style: image.style,
-        negative_prompt: image.negativePrompt,
-        seed: image.seed,
-        created_at: image.timestamp,
-      });
-    
-    if (error) console.error('Error saving image:', error);
+    try {
+      const { error } = await supabase
+        .from('generated_images')
+        .insert({
+          id: image.id,
+          user_id: user.id,
+          prompt: image.prompt,
+          image_urls: image.imageUrls,
+          aspect_ratio: image.aspectRatio,
+          style: image.style,
+          negative_prompt: image.negativePrompt,
+          seed: image.seed,
+          created_at: image.timestamp,
+        });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving image:', error);
+      throw error;
+    }
   };
 
   const loadGeneratedImages = async (limit = 10): Promise<GeneratedImage[]> => {
@@ -140,20 +145,25 @@ export const useDatabase = () => {
   const saveGeneratedVideo = async (video: GeneratedVideo) => {
     if (!user) return;
     
-    const { error } = await supabase
-      .from('generated_videos')
-      .insert({
-        id: video.id,
-        user_id: user.id,
-        prompt: video.prompt,
-        video_urls: video.videoUrls,
-        model: video.model,
-        seed: video.seed,
-        input_image: video.inputImage,
-        created_at: video.timestamp,
-      });
-    
-    if (error) console.error('Error saving video:', error);
+    try {
+      const { error } = await supabase
+        .from('generated_videos')
+        .insert({
+          id: video.id,
+          user_id: user.id,
+          prompt: video.prompt,
+          video_urls: video.videoUrls,
+          model: video.model,
+          seed: video.seed,
+          input_image: video.inputImage,
+          created_at: video.timestamp,
+        });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving video:', error);
+      throw error;
+    }
   };
 
   const loadGeneratedVideos = async (limit = 10): Promise<GeneratedVideo[]> => {
@@ -190,20 +200,25 @@ export const useDatabase = () => {
   const saveGeneratedMusic = async (music: GeneratedMusic) => {
     if (!user) return;
     
-    const { error } = await supabase
-      .from('generated_music')
-      .insert({
-        id: music.id,
-        user_id: user.id,
-        prompt: music.prompt,
-        title: music.title,
-        style: music.style,
-        is_instrumental: music.isInstrumental,
-        audio_url: music.audioUrl,
-        created_at: music.timestamp,
-      });
-    
-    if (error) console.error('Error saving music:', error);
+    try {
+      const { error } = await supabase
+        .from('generated_music')
+        .insert({
+          id: music.id,
+          user_id: user.id,
+          prompt: music.prompt,
+          title: music.title,
+          style: music.style,
+          is_instrumental: music.isInstrumental,
+          audio_url: music.audioUrl,
+          created_at: music.timestamp,
+        });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving music:', error);
+      throw error;
+    }
   };
 
   const loadGeneratedMusic = async (limit = 10): Promise<GeneratedMusic[]> => {
@@ -240,18 +255,23 @@ export const useDatabase = () => {
   const saveAISearchResult = async (result: AISearchResult) => {
     if (!user) return;
     
-    const { error } = await supabase
-      .from('ai_search_results')
-      .insert({
-        id: result.id,
-        user_id: user.id,
-        prompt: result.prompt,
-        result: result.result,
-        sources: result.sources,
-        created_at: result.timestamp,
-      });
-    
-    if (error) console.error('Error saving search result:', error);
+    try {
+      const { error } = await supabase
+        .from('ai_search_results')
+        .insert({
+          id: result.id,
+          user_id: user.id,
+          prompt: result.prompt,
+          result: result.result,
+          sources: result.sources,
+          created_at: result.timestamp,
+        });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving search result:', error);
+      throw error;
+    }
   };
 
   const loadAISearchResults = async (limit = 10): Promise<AISearchResult[]> => {
@@ -288,21 +308,26 @@ export const useDatabase = () => {
   const saveChatSession = async (session: ChatSession) => {
     if (!user) return;
     
-    const { error } = await supabase
-      .from('chat_sessions')
-      .upsert({
-        id: session.id,
-        user_id: user.id,
-        title: session.title,
-        persona_name: session.personaName,
-        system_instruction: session.systemInstruction,
-        messages: session.messages,
-        config: session.config,
-        created_at: session.lastUpdated,
-        updated_at: session.lastUpdated,
-      });
-    
-    if (error) console.error('Error saving chat session:', error);
+    try {
+      const { error } = await supabase
+        .from('chat_sessions')
+        .upsert({
+          id: session.id,
+          user_id: user.id,
+          title: session.title,
+          persona_name: session.personaName,
+          system_instruction: session.systemInstruction,
+          messages: session.messages,
+          config: session.config,
+          created_at: session.lastUpdated,
+          updated_at: session.lastUpdated,
+        });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving chat session:', error);
+      throw error;
+    }
   };
 
   const loadChatSessions = async (limit = 10): Promise<ChatSession[]> => {

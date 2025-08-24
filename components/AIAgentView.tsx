@@ -12,6 +12,7 @@ interface AIAgentViewProps {
   geminiApiKey: string;
   sessions: ChatSession[];
   setSessions: React.Dispatch<React.SetStateAction<ChatSession[]>>;
+  onSaveSession?: (session: ChatSession) => Promise<void>;
 }
 
 const pageContainerVariants: Variants = {
@@ -33,7 +34,7 @@ const pageContainerVariants: Variants = {
 };
 
 
-const AIAgentView: React.FC<AIAgentViewProps> = ({ geminiApiKey, sessions, setSessions }) => {
+const AIAgentView: React.FC<AIAgentViewProps> = ({ geminiApiKey, sessions, setSessions, onSaveSession }) => {
   const { t } = useTranslations();
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [isPersonaModalOpen, setIsPersonaModalOpen] = useState(false);
@@ -123,6 +124,17 @@ const AIAgentView: React.FC<AIAgentViewProps> = ({ geminiApiKey, sessions, setSe
           : s
       )
     );
+    
+    // Save to database if available
+    if (onSaveSession) {
+      const updatedSession = sessions.find(s => s.id === sessionId);
+      if (updatedSession) {
+        const sessionToSave = { ...updatedSession, messages: newMessages, lastUpdated: new Date().toISOString() };
+        onSaveSession(sessionToSave).catch(error => {
+          console.error('Failed to save session to database:', error);
+        });
+      }
+    }
   };
 
   const selectedSession = sessions.find(s => s.id === selectedSessionId);
@@ -141,6 +153,7 @@ const AIAgentView: React.FC<AIAgentViewProps> = ({ geminiApiKey, sessions, setSe
           geminiApiKey={geminiApiKey}
           onBack={() => setSelectedSessionId(null)}
           updateMessages={updateSessionMessages}
+          onSaveSession={onSaveSession}
         />
       </motion.div>
     );
@@ -238,8 +251,9 @@ interface ChatInterfaceProps {
     geminiApiKey: string;
     onBack: () => void;
     updateMessages: (sessionId: string, newMessages: AIAgentMessage[]) => void;
+  onSaveSession?: (session: ChatSession) => Promise<void>;
 }
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, geminiApiKey, onBack, updateMessages }) => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, geminiApiKey, onBack, updateMessages, onSaveSession }) => {
   const { t } = useTranslations();
   const [chat, setChat] = useState<Chat | null>(null);
   const [input, setInput] = useState('');
@@ -288,6 +302,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, geminiApiKey, on
     const userMessage: AIAgentMessage = { id: `msg-${Date.now()}`, sender: 'user', text: input };
     const newMessages = [...session.messages, userMessage];
     updateMessages(session.id, newMessages);
+    
+    // Save session after user message
+    if (onSaveSession) {
+      const updatedSession = { ...session, messages: newMessages, lastUpdated: new Date().toISOString() };
+      onSaveSession(updatedSession).catch(error => {
+        console.error('Failed to save session after user message:', error);
+      });
+    }
+    
     setInput('');
     setIsLoading(true);
     
@@ -301,6 +324,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, geminiApiKey, on
       for await (const chunk of result) {
         text += chunk.text;
         updateMessages(session.id, [...newMessages, { id: modelMessageId, sender: 'model', text }]);
+      }
+      
+      // Save session after model response
+      if (onSaveSession) {
+        const finalSession = { ...session, messages: [...newMessages, { id: modelMessageId, sender: 'model', text }], lastUpdated: new Date().toISOString() };
+        onSaveSession(finalSession).catch(error => {
+          console.error('Failed to save session after model response:', error);
+        });
       }
     } catch (e) {
       const errorText = e instanceof Error ? e.message : 'An unknown error occurred.';
