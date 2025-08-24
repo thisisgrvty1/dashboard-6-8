@@ -97,6 +97,13 @@ const VideoGenerationView: React.FC<VideoGenerationViewProps> = ({
         return;
     }
     setError(null);
+    console.log('Triggering video generation with settings:', {
+      prompt, 
+      numberOfVideos, 
+      seed: parsedSeed, 
+      model,
+      inputImage: inputImage ? 'present' : 'none'
+    });
     onGenerate({ 
       prompt, 
       numberOfVideos, 

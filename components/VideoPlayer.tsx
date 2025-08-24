@@ -28,19 +28,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       try {
         setVideoUrl(null);
         setError(null);
+        console.log('Fetching video from URL:', src);
         const response = await fetch(src);
+        console.log('Video fetch response:', response.status, response.statusText);
         if (!response.ok) {
           throw new Error(`Failed to fetch video: ${response.statusText}`);
         }
         const blob = await response.blob();
+        console.log('Video blob type:', blob.type, 'size:', blob.size);
         if (blob.type.startsWith('video/')) {
             objectUrl = URL.createObjectURL(blob);
+            console.log('Created object URL:', objectUrl);
             setVideoUrl(objectUrl);
         } else {
             throw new Error(`Invalid content type: ${blob.type}. Expected a video file.`);
         }
       } catch (e) {
-        console.error("Failed to load video", e);
+        console.error("Failed to load video from", src, ":", e);
         setError(e instanceof Error ? e.message : "Could not load video.");
       }
     };

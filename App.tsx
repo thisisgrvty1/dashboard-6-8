@@ -155,12 +155,26 @@ const App: React.FC = () => {
 
     for (const job of activeJobs) {
       try {
+        console.log(`Polling job ${job.id}, operation:`, job.operation);
         const updatedOperation = await ai.operations.getVideosOperation({ operation: job.operation });
+        console.log(`Job ${job.id} operation status:`, updatedOperation);
         
         if (updatedOperation.done) {
           const generatedVideos = updatedOperation.response?.generatedVideos;
+          console.log(`Job ${job.id} generated videos:`, generatedVideos);
           if (generatedVideos && generatedVideos.length > 0) {
-            const authenticatedUrls = generatedVideos.map(v => `${v.video?.uri}&key=${apiKeys.gemini}`);
+            const authenticatedUrls = generatedVideos.map(v => {
+              const uri = v.video?.uri;
+              if (!uri) {
+                console.error(`No URI found for video in job ${job.id}:`, v);
+                return null;
+              }
+              // Check if the URI already has query parameters
+              const separator = uri.includes('?') ? '&' : '?';
+              return `${uri}${separator}key=${apiKeys.gemini}`;
+            }).filter(Boolean);
+            
+            console.log(`Job ${job.id} authenticated URLs:`, authenticatedUrls);
             const usedSeed = job.seed;
             setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: 'completed', videoUrls: authenticatedUrls, seed: usedSeed, statusMessage: t('job_status_completed_single') } : j));
             const newHistoryItem: GeneratedVideo = { 
@@ -173,11 +187,17 @@ const App: React.FC = () => {
               inputImage: job.inputImage,
             };
             setGeneratedVideos(prev => [newHistoryItem, ...prev]);
-          } else { throw new Error('Generation finished, but no video URL was found.'); }
+          } else { 
+            console.error(`Job ${job.id} completed but no videos found. Response:`, updatedOperation.response);
+            throw new Error('Generation finished, but no video URL was found.'); 
+          }
         } else {
+          const state = (updatedOperation.metadata as any)?.state ?? 'IN_PROGRESS';
+          console.log(`Job ${job.id} still processing, state: ${state}`);
           setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, operation: updatedOperation, statusMessage: t('video_job_status_message_processing', { state: String((updatedOperation.metadata as any)?.state ?? 'IN_PROGRESS') }) } : j));
         }
       } catch (pollError) {
+        console.error(`Polling error for job ${job.id}:`, pollError);
         const errorMessage = pollError instanceof Error ? pollError.message : 'Unknown polling error.';
         setVideoJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: 'failed', error: errorMessage, statusMessage: t('job_status_failed_single') } : j));
       }
@@ -226,9 +246,12 @@ const App: React.FC = () => {
         };
       }
 
+      console.log('Starting video generation with payload:', generationPayload);
       const operation = await ai.models.generateVideos(generationPayload);
+      console.log('Video generation operation started:', operation);
       setVideoJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'polling', operation, statusMessage: t('job_status_polling') } : j));
     } catch (e) {
+      console.error('Video generation failed:', e);
       const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
       setVideoJobs(prev => prev.map(j => j.id === newJob.id ? { ...j, status: 'failed', error: errorMessage, statusMessage: t('job_status_failed_single') } : j));
     }
