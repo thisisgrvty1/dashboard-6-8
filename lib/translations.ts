@@ -13,6 +13,7 @@ export const translations: Record<Language, any> = {
     button_clear_history: 'Clear History',
     button_clear_completed: 'Clear Completed',
     error_gemini_api_key_not_set: 'Google Gemini API Key is not set. Please add it in the Settings page.',
+    
     // --- HEADER & FOOTER ---
     header_home: 'Home',
     header_settings_aria: 'Settings',
@@ -20,6 +21,7 @@ export const translations: Record<Language, any> = {
     header_tech_preview: 'Technology Preview',
     footer_imprint: 'Imprint',
     footer_privacy: 'Privacy Policy',
+    
     // --- HOME VIEW ---
     home_briefing_title: 'Your Daily Briefing',
     home_briefing_desc: "Here's a snapshot of today's key trends and insights to keep you ahead. We've curated a few topics that might spark your next big idea.",
@@ -33,6 +35,7 @@ export const translations: Record<Language, any> = {
     home_explore_modules: 'Explore Modules',
     home_no_activity_title: 'No Recent Activity',
     home_no_activity_desc: 'Your latest generations will show up here.',
+    
     // --- MODULE CARDS ---
     module_ai_agent_title: 'AI Agent',
     module_ai_agent_desc: 'Converse, generate ideas, and automate tasks.',
@@ -48,6 +51,7 @@ export const translations: Record<Language, any> = {
     module_music_generation_desc: 'Compose original music with AI.',
     module_featured_tag: 'Featured',
     module_status_coming_soon: 'Coming Soon',
+    
     // --- JOB STATUS ---
     job_status_processing: 'Processing...',
     job_status_completed: 'All Jobs Done',
@@ -59,6 +63,7 @@ export const translations: Record<Language, any> = {
     job_status_failed_single: 'Failed',
     job_status_modal_title: 'Recent Generations',
     job_status_outputs: '{count} outputs',
+    
     // --- SETTINGS VIEW ---
     settings_title: 'API Configuration',
     settings_enable_prefix: 'Enable',
@@ -80,6 +85,7 @@ export const translations: Record<Language, any> = {
     settings_debug_title: 'Developer Settings',
     settings_debug_enable: 'Enable Debug Mode',
     settings_debug_desc: 'Shows debug panel with detailed logging for troubleshooting. Logs are stored locally and can be exported.',
+    
     // --- WEBHOOK VIEW ---
     webhook_title: 'Webhook Chats',
     webhook_search_placeholder: 'Search modules...',
@@ -90,6 +96,7 @@ export const translations: Record<Language, any> = {
     webhook_delete_confirm: 'Are you sure you want to delete this module?',
     webhook_recent_activity: 'Recent Activity',
     webhook_no_activity: 'No activity yet.',
+    
     // --- WEBHOOK MODAL ---
     modal_create_module_title: 'Create New Module',
     modal_module_name_label: 'Module Name',
@@ -100,9 +107,11 @@ export const translations: Record<Language, any> = {
     modal_cancel: 'Cancel',
     modal_create_button: 'Create Module',
     modal_invalid_url_alert: 'Please enter a valid webhook URL.',
+    
     // --- WEBHOOK CHAT INTERFACE ---
     chat_placeholder: 'Type your message...',
     chat_make_api_key_error: 'Make.com API Key is not set. Please add it in the Settings page.',
+    
     // --- AI AGENT VIEW ---
     agent_title: 'AI Agent Sessions',
     agent_clear_all: 'Clear All',
@@ -114,6 +123,7 @@ export const translations: Record<Language, any> = {
     agent_rename_prompt: 'Enter new title for the chat:',
     agent_messages_label: 'messages',
     agent_last_updated_label: 'Last updated:',
+    
     // --- PERSONA MODAL ---
     persona_modal_title: 'Choose a Persona',
     persona_helpful_assistant_name: 'Helpful Assistant',
@@ -128,11 +138,13 @@ export const translations: Record<Language, any> = {
     persona_sarcastic_bot_name: 'Sarcastic Bot',
     persona_sarcastic_bot_desc: 'A witty and sarcastic companion for a humorous conversation.',
     persona_sarcastic_bot_instruction: "You are a sarcastic and witty bot. Your responses should be clever, humorous, and dripping with irony. However, remain helpful under the sarcasm. Don't be genuinely mean.",
+    
     // --- AI AGENT CHAT INTERFACE ---
     chat_interface_persona_label: 'Persona:',
     chat_interface_initial_message: "Hello! I'm your AI Agent. How can I help you today?",
     chat_interface_init_error: 'Failed to initialize AI Agent. Please check your Gemini API Key.',
     chat_interface_placeholder: 'Type your message to the AI Agent...',
+    
     // --- IMAGE GENERATION VIEW ---
     image_title: 'Image Settings',
     image_history_title: 'Image History',
@@ -158,6 +170,7 @@ export const translations: Record<Language, any> = {
     image_prompt_error: 'Please enter a prompt.',
     image_seed_error: 'Seed must be a positive number.',
     button_use_settings: 'Use Settings',
+    
     // --- VIDEO GENERATION VIEW ---
     video_title: 'Video Settings',
     video_history_title: 'Video History',
@@ -174,6 +187,7 @@ export const translations: Record<Language, any> = {
     video_ready_title: 'Ready to Create',
     video_ready_desc: 'Your generated videos will appear here.',
     video_job_status_message_processing: 'Processing... (State: {state})',
+    
     // --- MUSIC GENERATION VIEW ---
     music_title: 'Music Settings',
     music_history_title: 'Music History',
@@ -196,6 +210,7 @@ export const translations: Record<Language, any> = {
     music_ready_desc: 'Your generated music tracks will appear here.',
     music_job_status_composing: 'Composing melody...',
     music_job_status_adding_instruments: 'Adding instruments...',
+    
     // --- AI SEARCH VIEW ---
     search_title: 'AI Search',
     search_desc: 'Get real-time answers backed by Google Search.',
@@ -212,6 +227,7 @@ export const translations: Record<Language, any> = {
     search_clear_history_confirm: 'Are you sure you want to delete your entire search history?',
     button_search_again: 'Search Again',
     button_view_result: 'View Result',
+    
     // --- GEMINI LIVE VIEW ---
     gemini_live_title: 'Talk to Gemini live',
     gemini_live_placeholder: 'Start typing a prompt',
@@ -220,6 +236,22 @@ export const translations: Record<Language, any> = {
     gemini_live_webcam: 'Webcam',
     gemini_live_share_screen: 'Share Screen',
     gemini_live_init_error: 'Failed to initialize Gemini model.',
+    
+    // --- DEBUG SYSTEM ---
+    debug_panel_title: 'Debug Panel',
+    debug_export_logs: 'Export logs',
+    debug_clear_logs: 'Clear logs',
+    debug_no_logs: 'No debug logs yet',
+    debug_expand: 'Expand',
+    debug_collapse: 'Collapse',
+    
+    // --- ERROR BOUNDARY ---
+    error_boundary_title: 'Something went wrong',
+    error_boundary_desc: 'An unexpected error occurred. You can try reloading the page or return to the home screen.',
+    error_boundary_details: 'Error Details',
+    error_boundary_reload: 'Reload Page',
+    error_boundary_home: 'Go Home',
+    
     // --- IMPRINT/PRIVACY ---
     imprint_title: 'Imprint',
     privacy_title: 'Privacy Policy'
@@ -233,28 +265,31 @@ export const translations: Record<Language, any> = {
     button_back_to_search: 'Zurück zur Suche',
     button_back_to_home: 'Zurück zur Startseite',
     button_clear_history: 'Verlauf löschen',
-    button_clear_completed: 'Fertige löschen',
+    button_clear_completed: 'Abgeschlossene löschen',
     error_gemini_api_key_not_set: 'Google Gemini API-Schlüssel ist nicht festgelegt. Bitte fügen Sie ihn in den Einstellungen hinzu.',
+    
     // --- HEADER & FOOTER ---
     header_home: 'Startseite',
     header_settings_aria: 'Einstellungen',
-    header_theme_aria: 'Theme wechseln',
+    header_theme_aria: 'Design wechseln',
     header_tech_preview: 'Technologie-Vorschau',
     footer_imprint: 'Impressum',
     footer_privacy: 'Datenschutz',
+    
     // --- HOME VIEW ---
     home_briefing_title: 'Ihr tägliches Briefing',
     home_briefing_desc: 'Hier ist eine Momentaufnahme der wichtigsten Trends und Erkenntnisse von heute, um Sie auf dem Laufenden zu halten. Wir haben einige Themen zusammengestellt, die Ihre nächste große Idee anstoßen könnten.',
-    home_briefing_link1: 'Der Aufstieg lokaler LLMs auf Consumer-Geräten',
+    home_briefing_link1: 'Der Aufstieg lokaler LLMs auf Verbrauchergeräten',
     home_briefing_link2: 'UX-Design im Jahr 2025: KI-First-Interfaces',
     home_briefing_link3: 'Prompt Engineering: Von der Nischenkompetenz zur Kernkompetenz',
-    home_featured_module_title: 'Top-Modul: KI-Agent',
-    home_featured_module_desc: 'Chatten Sie mit spezialisierten KI-Personas, von kreativen Autoren bis zu Code-Assistenten. Starten Sie heute eine neue Konversation!',
-    home_featured_module_cta: 'KI-Agent testen',
+    home_featured_module_title: 'Empfohlenes Modul: KI-Agent',
+    home_featured_module_desc: 'Chatten Sie mit spezialisierten KI-Personas, von kreativen Autoren bis zu Code-Assistenten. Starten Sie heute eine neue Unterhaltung!',
+    home_featured_module_cta: 'KI-Agent ausprobieren',
     home_recent_activity: 'Letzte Aktivitäten',
     home_explore_modules: 'Module entdecken',
     home_no_activity_title: 'Keine letzten Aktivitäten',
-    home_no_activity_desc: 'Ihre neuesten Kreationen werden hier angezeigt.',
+    home_no_activity_desc: 'Ihre neuesten Generierungen werden hier angezeigt.',
+    
     // --- MODULE CARDS ---
     module_ai_agent_title: 'KI-Agent',
     module_ai_agent_desc: 'Unterhalten, Ideen entwickeln und Aufgaben automatisieren.',
@@ -268,19 +303,21 @@ export const translations: Record<Language, any> = {
     module_webhook_chat_desc: 'Interagieren Sie mit Make.com-Webhooks.',
     module_music_generation_title: 'Musikerzeugung',
     module_music_generation_desc: 'Komponieren Sie originelle Musik mit KI.',
-    module_featured_tag: 'Top-Modul',
-    module_status_coming_soon: 'Kommt bald',
+    module_featured_tag: 'Empfohlen',
+    module_status_coming_soon: 'Demnächst verfügbar',
+    
     // --- JOB STATUS ---
-    job_status_processing: 'In Bearbeitung...',
-    job_status_completed: 'Alle Jobs fertig',
-    job_status_failed: 'Jobs fehlgeschlagen',
-    job_status_recent: 'Letzte Jobs',
-    job_status_generating: 'Erzeugt...',
-    job_status_polling: 'Warte...',
+    job_status_processing: 'Wird verarbeitet...',
+    job_status_completed: 'Alle Aufträge abgeschlossen',
+    job_status_failed: 'Aufträge fehlgeschlagen',
+    job_status_recent: 'Letzte Aufträge',
+    job_status_generating: 'Wird generiert',
+    job_status_polling: 'Wird abgefragt...',
     job_status_completed_single: 'Abgeschlossen',
     job_status_failed_single: 'Fehlgeschlagen',
-    job_status_modal_title: 'Letzte Generationen',
+    job_status_modal_title: 'Letzte Generierungen',
     job_status_outputs: '{count} Ausgaben',
+    
     // --- SETTINGS VIEW ---
     settings_title: 'API-Konfiguration',
     settings_enable_prefix: 'Aktivieren',
@@ -302,6 +339,7 @@ export const translations: Record<Language, any> = {
     settings_debug_title: 'Entwicklereinstellungen',
     settings_debug_enable: 'Debug-Modus aktivieren',
     settings_debug_desc: 'Zeigt Debug-Panel mit detaillierter Protokollierung zur Fehlerbehebung. Protokolle werden lokal gespeichert und können exportiert werden.',
+    
     // --- WEBHOOK VIEW ---
     webhook_title: 'Webhook-Chats',
     webhook_search_placeholder: 'Module suchen...',
@@ -312,6 +350,7 @@ export const translations: Record<Language, any> = {
     webhook_delete_confirm: 'Sind Sie sicher, dass Sie dieses Modul löschen möchten?',
     webhook_recent_activity: 'Letzte Aktivität',
     webhook_no_activity: 'Noch keine Aktivität.',
+    
     // --- WEBHOOK MODAL ---
     modal_create_module_title: 'Neues Modul erstellen',
     modal_module_name_label: 'Modulname',
@@ -322,27 +361,30 @@ export const translations: Record<Language, any> = {
     modal_cancel: 'Abbrechen',
     modal_create_button: 'Modul erstellen',
     modal_invalid_url_alert: 'Bitte geben Sie eine gültige Webhook-URL ein.',
+    
     // --- WEBHOOK CHAT INTERFACE ---
     chat_placeholder: 'Ihre Nachricht eingeben...',
     chat_make_api_key_error: 'Make.com API-Schlüssel ist nicht festgelegt. Bitte fügen Sie ihn in den Einstellungen hinzu.',
+    
     // --- AI AGENT VIEW ---
     agent_title: 'KI-Agent-Sitzungen',
     agent_clear_all: 'Alle löschen',
     agent_new_chat: 'Neuer Chat',
     agent_clear_all_confirm: 'Sind Sie sicher, dass Sie ALLE Chat-Sitzungen löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
     agent_empty_title: 'Keine Chat-Sitzungen',
-    agent_empty_desc: 'Klicken Sie auf "Neuer Chat", um eine Konversation mit einer KI-Persona zu starten.',
+    agent_empty_desc: 'Klicken Sie auf "Neuer Chat", um eine Unterhaltung mit einer KI-Persona zu starten.',
     agent_delete_confirm: 'Sind Sie sicher, dass Sie diese Chat-Sitzung löschen möchten?',
     agent_rename_prompt: 'Neuen Titel für den Chat eingeben:',
     agent_messages_label: 'Nachrichten',
     agent_last_updated_label: 'Zuletzt aktualisiert:',
+    
     // --- PERSONA MODAL ---
     persona_modal_title: 'Wählen Sie eine Persona',
     persona_helpful_assistant_name: 'Hilfreicher Assistent',
     persona_helpful_assistant_desc: 'Eine vielseitige, freundliche und kompetente KI.',
     persona_helpful_assistant_instruction: 'Du bist ein hilfreicher und kreativer KI-Assistent. Sei freundlich, kompetent und gib klare, präzise Antworten.',
     persona_creative_writer_name: 'Kreativer Autor',
-    persona_creative_writer_desc: 'Dein Partner für das Brainstorming von Geschichten, Gedichten und Skripten.',
+    persona_creative_writer_desc: 'Ihr Partner für das Brainstorming von Geschichten, Gedichten und Skripten.',
     persona_creative_writer_instruction: 'Du bist ein fantasievoller und wortgewandter kreativer Autor. Hilf dem Benutzer beim Brainstorming, beim Schreiben fesselnder Erzählungen und beim Erkunden verschiedener Schreibstile. Verwende einen reichen Wortschatz und literarische Mittel.',
     persona_code_wizard_name: 'Code-Zauberer',
     persona_code_wizard_desc: 'Ein erfahrener Programmierer, der bei Code, Algorithmen und Debugging hilft.',
@@ -350,36 +392,39 @@ export const translations: Record<Language, any> = {
     persona_sarcastic_bot_name: 'Sarkastischer Bot',
     persona_sarcastic_bot_desc: 'Ein witziger und sarkastischer Begleiter für humorvolle Gespräche.',
     persona_sarcastic_bot_instruction: 'Du bist ein sarkastischer und witziger Bot. Deine Antworten sollten clever, humorvoll und voller Ironie sein. Bleibe jedoch unter dem Sarkasmus hilfreich. Sei nicht wirklich gemein.',
+    
     // --- AI AGENT CHAT INTERFACE ---
     chat_interface_persona_label: 'Persona:',
     chat_interface_initial_message: 'Hallo! Ich bin Ihr KI-Agent. Wie kann ich Ihnen heute helfen?',
     chat_interface_init_error: 'Fehler beim Initialisieren des KI-Agenten. Bitte überprüfen Sie Ihren Gemini API-Schlüssel.',
     chat_interface_placeholder: 'Ihre Nachricht an den KI-Agenten...',
+    
     // --- IMAGE GENERATION VIEW ---
     image_title: 'Bildeinstellungen',
     image_history_title: 'Bildverlauf',
     image_empty_title: 'Noch keine Bilder erzeugt',
     image_empty_desc: 'Ihre erzeugten Bilder werden hier angezeigt.',
-    image_delete_history_confirm: 'Sind Sie sicher, dass Sie diese Generation aus Ihrem Verlauf löschen möchten?',
+    image_delete_history_confirm: 'Sind Sie sicher, dass Sie diese Generierung aus Ihrem Verlauf löschen möchten?',
     image_clear_history_confirm: 'Sind Sie sicher, dass Sie Ihren gesamten Bildverlauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
-    image_prompt_label: 'Prompt',
+    image_prompt_label: 'Eingabeaufforderung',
     image_prompt_placeholder: 'Ein majestätischer Löwe mit einer Krone...',
-    image_negative_prompt_label: 'Negativer Prompt (Optional)',
+    image_negative_prompt_label: 'Negative Eingabeaufforderung (Optional)',
     image_negative_prompt_placeholder: 'z.B. unscharf, Cartoon, Text',
     image_style_label: 'Stil (Optional)',
     image_style_default: 'Standard',
     image_aspect_ratio_label: 'Seitenverhältnis',
     image_number_label: 'Anzahl',
     image_seed_label: 'Seed (Optional)',
-    image_seed_tooltip: 'Die Verwendung desselben Seeds und Prompts erzeugt ähnliche Bilder. Für einen zufälligen Seed leer lassen.',
+    image_seed_tooltip: 'Die Verwendung desselben Seeds und derselben Eingabeaufforderung erzeugt ähnliche Bilder. Für einen zufälligen Seed leer lassen.',
     image_seed_placeholder: 'z.B. 42',
     image_generate_button: 'Erzeugen',
     image_queue_title: 'Warteschlange',
     image_ready_title: 'Bereit zum Erstellen',
     image_ready_desc: 'Ihre erzeugten Bilder werden hier angezeigt.',
-    image_prompt_error: 'Bitte geben Sie einen Prompt ein.',
+    image_prompt_error: 'Bitte geben Sie eine Eingabeaufforderung ein.',
     image_seed_error: 'Seed muss eine positive Zahl sein.',
     button_use_settings: 'Einstellungen verwenden',
+    
     // --- VIDEO GENERATION VIEW ---
     video_title: 'Videoeinstellungen',
     video_history_title: 'Videoverlauf',
@@ -395,7 +440,8 @@ export const translations: Record<Language, any> = {
     video_queue_title: 'Warteschlange',
     video_ready_title: 'Bereit zum Erstellen',
     video_ready_desc: 'Ihre erzeugten Videos werden hier angezeigt.',
-    video_job_status_message_processing: 'Verarbeite... (Status: {state})',
+    video_job_status_message_processing: 'Wird verarbeitet... (Status: {state})',
+    
     // --- MUSIC GENERATION VIEW ---
     music_title: 'Musikeinstellungen',
     music_history_title: 'Musikverlauf',
@@ -406,18 +452,19 @@ export const translations: Record<Language, any> = {
     music_rename_prompt: 'Neuen Titel eingeben:',
     music_track_title_label: 'Titel',
     music_track_title_placeholder: 'z.B. Mitternachtsregen',
-    music_prompt_label: 'Prompt',
+    music_prompt_label: 'Eingabeaufforderung',
     music_prompt_placeholder: 'Eine traurige, langsame Solo-Klaviermelodie...',
     music_style_label: 'Stil',
     music_style_placeholder: 'z.B. Filmisch, Akustik-Pop',
     music_instrumental_label: 'Instrumental',
-    music_prompt_error: 'Bitte geben Sie einen Prompt und einen Titel ein.',
+    music_prompt_error: 'Bitte geben Sie eine Eingabeaufforderung und einen Titel ein.',
     music_api_key_error: 'Suno API-Schlüssel ist nicht festgelegt. Bitte fügen Sie ihn in den Einstellungen hinzu.',
     music_queue_title: 'Warteschlange',
     music_ready_title: 'Bereit zum Komponieren',
     music_ready_desc: 'Ihre erzeugten Musikstücke werden hier angezeigt.',
     music_job_status_composing: 'Komponiere Melodie...',
     music_job_status_adding_instruments: 'Füge Instrumente hinzu...',
+    
     // --- AI SEARCH VIEW ---
     search_title: 'KI-Suche',
     search_desc: 'Erhalten Sie Echtzeit-Antworten mit Google-Suche.',
@@ -434,14 +481,31 @@ export const translations: Record<Language, any> = {
     search_clear_history_confirm: 'Sind Sie sicher, dass Sie Ihren gesamten Suchverlauf löschen möchten?',
     button_search_again: 'Erneut suchen',
     button_view_result: 'Ergebnis ansehen',
+    
     // --- GEMINI LIVE VIEW ---
     gemini_live_title: 'Sprechen Sie live mit Gemini',
-    gemini_live_placeholder: 'Beginnen Sie mit der Eingabe eines Prompts',
-    gemini_live_run: 'Start',
+    gemini_live_placeholder: 'Beginnen Sie mit der Eingabe einer Eingabeaufforderung',
+    gemini_live_run: 'Ausführen',
     gemini_live_talk: 'Sprechen',
     gemini_live_webcam: 'Webcam',
     gemini_live_share_screen: 'Bildschirm teilen',
     gemini_live_init_error: 'Fehler beim Initialisieren des Gemini-Modells.',
+    
+    // --- DEBUG SYSTEM ---
+    debug_panel_title: 'Debug-Panel',
+    debug_export_logs: 'Protokolle exportieren',
+    debug_clear_logs: 'Protokolle löschen',
+    debug_no_logs: 'Noch keine Debug-Protokolle',
+    debug_expand: 'Erweitern',
+    debug_collapse: 'Einklappen',
+    
+    // --- ERROR BOUNDARY ---
+    error_boundary_title: 'Etwas ist schiefgelaufen',
+    error_boundary_desc: 'Ein unerwarteter Fehler ist aufgetreten. Sie können versuchen, die Seite neu zu laden oder zur Startseite zurückzukehren.',
+    error_boundary_details: 'Fehlerdetails',
+    error_boundary_reload: 'Seite neu laden',
+    error_boundary_home: 'Zur Startseite',
+    
     // --- IMPRINT/PRIVACY ---
     imprint_title: 'Impressum',
     privacy_title: 'Datenschutzerklärung'
