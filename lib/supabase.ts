@@ -1,13 +1,37 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+// Validate URL format
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
+  console.warn('Supabase environment variables are missing or invalid. Database features will be disabled.');
+  // Create a mock client that won't crash the app
+  export const supabase = {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    from: () => ({
+      insert: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+      select: () => Promise.resolve({ data: [], error: null }),
+      delete: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+      upsert: () => Promise.resolve({ error: new Error('Supabase not configured') })
+    })
+  } as any;
+} else {
+  export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Database types
 export interface DatabaseGeneratedImage {
