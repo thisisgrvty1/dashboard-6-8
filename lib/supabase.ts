@@ -15,22 +15,26 @@ const isValidUrl = (url: string) => {
 
 if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
   console.warn('Supabase environment variables are missing or invalid. Database features will be disabled.');
-  // Create a mock client that won't crash the app
-  export const supabase = {
-    auth: {
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
-    },
-    from: () => ({
-      insert: () => Promise.resolve({ error: new Error('Supabase not configured') }),
-      select: () => Promise.resolve({ data: [], error: null }),
-      delete: () => Promise.resolve({ error: new Error('Supabase not configured') }),
-      upsert: () => Promise.resolve({ error: new Error('Supabase not configured') })
-    })
-  } as any;
-} else {
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 }
+
+// Create a mock client that won't crash the app
+const mockSupabase = {
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+  },
+  from: () => ({
+    insert: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+    select: () => Promise.resolve({ data: [], error: null }),
+    delete: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+    upsert: () => Promise.resolve({ error: new Error('Supabase not configured') })
+  })
+} as any;
+
+// Export the appropriate client based on configuration
+export const supabase = (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) 
+  ? mockSupabase 
+  : createClient(supabaseUrl, supabaseAnonKey);
 
 
 // Database types
